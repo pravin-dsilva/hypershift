@@ -190,7 +190,7 @@ EOF
 
 ~~~sh
 envsubst <<"EOF" | oc apply -f -
-apiVersion: hypershift.openshift.io/v1alpha1
+apiVersion: hypershift.openshift.io/v1beta1
 kind: HostedCluster
 metadata:
   name: ${HOSTED}
@@ -203,9 +203,12 @@ spec:
   sshKey:
     name: "${HOSTED}-ssh-key"
   networking:
-    serviceCIDR: "172.31.0.0/16"
-    podCIDR: "10.132.0.0/14"
-    machineCIDR: "${MACHINE_CIDR}"
+    clusterNetwork:
+    - cidr: "10.132.0.0/14"
+    machineNetwork:
+    - cidr: "${MACHINE_CIDR}"
+    serviceNetwork:
+    - cidr: "172.31.0.0/16"
   platform:
     type: None
   infraID: ${HOSTED}
@@ -240,7 +243,7 @@ spec:
 EOF
 
 envsubst <<"EOF" | oc apply -f -
-apiVersion: hypershift.openshift.io/v1alpha1
+apiVersion: hypershift.openshift.io/v1beta1
 kind: NodePool
 metadata:
   name: ${HOSTED}-workers
